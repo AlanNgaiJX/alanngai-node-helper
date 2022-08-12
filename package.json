@@ -1,0 +1,11 @@
+{
+  "name": "alanngai-node-helper",
+  "version": "1.0.0",
+  "description": "私伙耶，我的node工具库",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "AlanNgaiJX",
+  "license": "ISC"
+}
