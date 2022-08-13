@@ -3,6 +3,7 @@
 */
 const fs = require("fs");
 const child_process = require("child_process");
+const os = require("os");
 
 /**
  * 获取文件夹下所有文件名
@@ -81,6 +82,31 @@ function isSameFile(pathA, pathB) {
   return tmpBufA.equals(tmpBufB);
 }
 
+/**
+ * 判断是否文件夹
+ * @param  { string } path 路径
+ * @return { boolean } 是否为文件夹
+ */
+function isDir(path) {
+  return fs.statSync(path).isDirectory();
+}
+
+/**
+ * 获取操作系统名，可能是 MacOS、Linux、Windows
+ */
+function getSystemName() {
+  const stystemStr = os.type();
+  if (stystemStr.indexOf("Windows") > -1) {
+    return "Windows";
+  }
+  if (stystemStr.indexOf("Darwin") > -1) {
+    return "MacOS";
+  }
+  if (stystemStr.indexOf("Linux") > -1) {
+    return "Linux";
+  }
+}
+
 module.exports = exports = {
   getAllFileNameFromDir,
   copyFile,
@@ -88,5 +114,7 @@ module.exports = exports = {
   getFileExt,
   getFileNameOnly,
   runShellCommand,
-  isSameFile
+  isSameFile,
+  isDir,
+  getSystemName,
 };
