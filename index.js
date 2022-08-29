@@ -107,6 +107,17 @@ function getSystemName() {
   }
 }
 
+/**
+ * @param  { string } pathA 文件路径 A
+ * @param  { string } pathB 文件路径 B
+ */
+function isFileEqual(pathA, pathB) {
+  const bufferA = fs.readFileSync(pathA);
+  const bufferB = fs.readFileSync(pathB);
+
+  bufferA.equals(bufferB);// Buffer.equals()
+}
+
 module.exports = exports = {
   getAllFileNameFromDir,
   copyFile,
@@ -117,4 +128,5 @@ module.exports = exports = {
   isSameFile,
   isDir,
   getSystemName,
+  isFileEqual
 };
