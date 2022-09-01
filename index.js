@@ -4,6 +4,7 @@
 const fs = require("fs");
 const child_process = require("child_process");
 const os = require("os");
+const path = require("path");
 
 /**
  * 获取文件夹下所有文件名
@@ -42,7 +43,7 @@ function getFileExt(fileName) {
 
 /**
  * 通过文件路径仅获取文件名
- * @param  { string } filePath 文件路径
+ * @param  { string } filePath 文件绝对路径
  */
 function getFileNameOnly(filePath) {
   return filePath.split("/").pop().split(".")[0];
@@ -73,8 +74,8 @@ function runShellCommand(command, shell) {
 
 /**
  * 比对两个文件（如json）（格式和内容）是否全等
- * @param  { string } pathA 文件A
- * @param  { string } pathB 文件B
+ * @param  { string } pathA 文件A，绝对路径
+ * @param  { string } pathB 文件B，绝对路径
  */
 function isSameFile(pathA, pathB) {
   var tmpBufA = fs.readFileSync(pathA);
@@ -84,7 +85,7 @@ function isSameFile(pathA, pathB) {
 
 /**
  * 判断是否文件夹
- * @param  { string } path 路径
+ * @param  { string } path 文件夹绝对路径
  * @return { boolean } 是否为文件夹
  */
 function isDir(path) {
@@ -108,14 +109,27 @@ function getSystemName() {
 }
 
 /**
- * @param  { string } pathA 文件路径 A
- * @param  { string } pathB 文件路径 B
+ * 如果不存在则创建文件夹
+ * @param  { string } filepath 文件夹绝对路径
+ * @return { boolean } 完成则返回true
  */
-function isFileEqual(pathA, pathB) {
-  const bufferA = fs.readFileSync(pathA);
-  const bufferB = fs.readFileSync(pathB);
+async function createDirIfNonExist(filepath) {
+  try {
+    await fs.promises.stat(filepath);
+  } catch (e) {
+    // 不存在文件夹，直接创建 {recursive: true} 这个配置项是配置自动创建多个文件夹
+    await fs.promises.mkdir(filepath, { recursive: true });
+  }
+  return true;
+}
 
-  bufferA.equals(bufferB);// Buffer.equals()
+/**
+ * 把路径格式化为 xx/xx，主要是为了处理 win系统上的差异
+ * @param  { string } filepath 文件路径
+ * @return { string } 格式化后的路径
+ */
+function normalizePath(filepath) {
+  return filepath.split(path.sep).join("/");
 }
 
 module.exports = exports = {
@@ -128,5 +142,6 @@ module.exports = exports = {
   isSameFile,
   isDir,
   getSystemName,
-  isFileEqual
+  createDirIfNonExist,
+  normalizePath
 };
