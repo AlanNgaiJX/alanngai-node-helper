@@ -133,6 +133,27 @@ function normalizePath(filepath) {
   return filepath.split(path.sep).join("/");
 }
 
+/**
+ * @param  {string} dirPath - 文件夹绝对路径
+ */
+function rmdir(dirPath) {
+  if (fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory()) {
+    const files = fs.readdirSync(dirPath);
+    let childPath = null;
+    files.forEach((child) => {
+      childPath = path.resolve(dirPath, child);
+      if (fs.statSync(childPath).isDirectory()) {
+        rmdir(childPath);
+      } else {
+        fs.unlinkSync(childPath);
+      }
+    });
+    fs.rmdirSync(dirPath);
+  }else{
+    throw new Error("路径不存在")
+  }
+}
+
 module.exports = exports = {
   getAllFileNameFromDir,
   copyFile,
@@ -144,5 +165,6 @@ module.exports = exports = {
   isDir,
   getSystemName,
   createDirIfNonExist,
-  normalizePath
+  normalizePath,
+  rmdir
 };
